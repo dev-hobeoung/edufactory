@@ -65,6 +65,10 @@ function upsertVersion(detail: DocumentDetail, v: DocumentVersion): DocumentDeta
   return { ...detail, versions, currentVersion: Math.max(detail.currentVersion, v.version), title: v.payload.title };
 }
 
+function normalize(c: ConversationSummary): ConversationSummary {
+  return { ...c, conditions: normalizeConditions(c.conditions) };
+}
+
 export default function StudioPage() {
   const { conversationId } = useParams<{ conversationId: string }>();
   const navigate = useNavigate();
@@ -72,6 +76,7 @@ export default function StudioPage() {
   const { data: settings } = useSettings();
 
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+  const [archived, setArchived] = useState<ConversationSummary[] | null>(null);
   const [listLoading, setListLoading] = useState(true);
   const [turns, setTurns] = useState<Turn[]>([]);
   const [turnsLoading, setTurnsLoading] = useState(false);
@@ -94,7 +99,8 @@ export default function StudioPage() {
   const docRef = useRef<DocumentDetail | null>(null);
   docRef.current = doc;
 
-  const active = conversations.find((c) => c.id === conversationId) ?? null;
+  const active =
+    conversations.find((c) => c.id === conversationId) ?? archived?.find((c) => c.id === conversationId) ?? null;
   const remoteRunning = !!conversationId && !streaming && runningIds.includes(conversationId);
 
   const refreshRunning = useCallback(async () => {
@@ -108,7 +114,7 @@ export default function StudioPage() {
   const loadList = useCallback(async () => {
     try {
       const list = await api.conversations();
-      setConversations(list.map((c) => ({ ...c, conditions: normalizeConditions(c.conditions) })));
+      setConversations(list.map(normalize));
     } catch (e) {
       setError(errorMessage(e));
     } finally {
@@ -188,7 +194,7 @@ export default function StudioPage() {
     Promise.all([api.messages(id), api.conversations()])
       .then(([t, list]) => {
         setTurns(t);
-        setConversations(list.map((c) => ({ ...c, conditions: normalizeConditions(c.conditions) })));
+        setConversations(list.map(normalize));
         const documentId = list.find((c) => c.id === id)?.documentId;
         if (documentId) return loadDoc(documentId);
       })
@@ -301,7 +307,7 @@ export default function StudioPage() {
     try {
       const [t, list] = await Promise.all([api.messages(convId), api.conversations()]);
       setTurns(t);
-      setConversations(list.map((c) => ({ ...c, conditions: normalizeConditions(c.conditions) })));
+      setConversations(list.map(normalize));
     } catch {
       // 다시 맞추지 못해도 화면 내용은 그대로 둔다
     }
@@ -391,7 +397,36 @@ export default function StudioPage() {
   const archive = (id: string) =>
     api
       .updateConversation(id, { archived: true })
+      .then((s) => {
+        setConversations((list) => list.filter((x) => x.id !== id));
+        setArchived((list) => (list ? [normalize(s), ...list] : list));
+        if (id === conversationId) navigate('/studio');
+      })
+      .catch((e) => setError(errorMessage(e)));
+
+  const loadArchived = () =>
+    api
+      .conversations(undefined, true)
+      .then((list) => setArchived(list.map(normalize)))
+      .catch((e) => {
+        setArchived([]);
+        setError(errorMessage(e));
+      });
+
+  const unarchive = (id: string) =>
+    api
+      .updateConversation(id, { archived: false })
       .then(() => {
+        setArchived((list) => list?.filter((x) => x.id !== id) ?? list);
+        return loadList();
+      })
+      .catch((e) => setError(errorMessage(e)));
+
+  const remove = (id: string) =>
+    api
+      .deleteConversation(id)
+      .then(() => {
+        setArchived((list) => list?.filter((x) => x.id !== id) ?? list);
         setConversations((list) => list.filter((x) => x.id !== id));
         if (id === conversationId) navigate('/studio');
       })
@@ -418,7 +453,11 @@ export default function StudioPage() {
           navigate('/studio');
         }}
         onRename={rename}
+        archivedItems={archived}
         onArchive={archive}
+        onShowArchived={loadArchived}
+        onUnarchive={unarchive}
+        onDelete={remove}
         loading={listLoading}
       />
 
