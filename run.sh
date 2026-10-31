@@ -373,7 +373,9 @@ menu() {
     echo "  1) 기동      2) 종료      3) 재시작"
     echo "  4) 속성      5) 로그      6) 상태"
     echo "  q) 나가기  ${D}(서버·웹은 백그라운드로 계속 돈다)${N}"
-    read -r -p "> " c || { echo; return 0; }
+    if ! read -r -p "> " c; then
+      echo; warn "입력이 끊겨 메뉴를 닫는다 (서버·웹은 계속 돈다)"; return 0
+    fi
     case "$c" in
       1) t="$(pick_target)" && for x in $t; do "start_$x" || break; done ;;
       2) t="$(pick_target)" && for x in $t; do stop_one "$x"; done ;;
@@ -388,19 +390,28 @@ menu() {
   done
 }
 
+# 표준입력이 터미널이 아니면(IDE 실행 버튼, 파이프 등) 메뉴가 입력을 못 받고 바로 끝나므로 터미널에 다시 붙인다.
+interactive() {
+  [ -t 0 ] && return 0
+  if { exec 3</dev/tty; } 2>/dev/null; then exec 0<&3 3<&-; return 0; fi
+  do_status; echo
+  err "입력을 받을 터미널이 없어 대화형 메뉴를 띄울 수 없다 — 터미널 창에서 ./run.sh 를 실행하거나, ./run.sh start 처럼 명령을 붙인다"
+  echo; usage; return 1
+}
+
 usage() { sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; }
 
 main() {
   load_conf
   local cmd="${1:-menu}"; [ $# -gt 0 ] && shift
   case "$cmd" in
-    menu) menu ;;
+    menu) interactive && menu ;;
     start|up) do_start "${1:-all}" ;;
     stop|down) do_stop "${1:-all}" ;;
     restart) do_restart "${1:-all}" ;;
     status|st) do_status ;;
     logs|log) do_logs "${1:-server}" ;;
-    config|cfg) config_menu ;;
+    config|cfg) interactive && config_menu ;;
     get) if [ $# -gt 0 ]; then value_of "$1"; echo; else print_props; fi ;;
     set)
       [ $# -ge 2 ] || { err "사용법: ./run.sh set KEY VALUE"; exit 1; }
