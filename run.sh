@@ -11,6 +11,14 @@
 # 우선순위: .edufactory.env > 셸 환경변수 > 기본값.
 # 로그·PID 는 .run/ 에 쌓인다. DB 는 설정된 컨테이너(DB_CONTAINER)만 켠다 — 다른 컨테이너는 건드리지 않는다.
 
+# `. ./run.sh` / `source run.sh` 로 불러도 현재 셸(zsh 등)이 아니라 새 bash 프로세스에서 돌린다.
+# (zsh 는 문법이 달라 깨지고, 스크립트의 exit 가 터미널 셸을 닫아 버린다)
+if [ -n "${ZSH_VERSION:-}" ]; then
+  bash "$0" "$@"; return $?
+elif [ -n "${BASH_VERSION:-}" ] && [ "${BASH_SOURCE[0]}" != "$0" ]; then
+  bash "${BASH_SOURCE[0]}" "$@"; return $?
+fi
+
 set -u
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
