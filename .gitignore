@@ -1,0 +1,17 @@
+# 서버
+server/build/
+server/.gradle/
+server/data/
+server/bin/
+*.log
+
+# 웹
+web/node_modules/
+web/build/
+web/.env
+web/.env.local
+
+# 기타
+.DS_Store
+.idea/
+.vscode/

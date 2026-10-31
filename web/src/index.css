@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  /* 차트 토큰 */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-muted: #cbd5e1;
+  --grid: #e5e7eb;
+  --axis: #9ca3af;
+  --ink: #334155;
+  --ink-muted: #6b7280;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: Pretendard, 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.rich-text p + p,
+.rich-text p + ul,
+.rich-text p + ol,
+.rich-text ul + p,
+.rich-text ol + p {
+  margin-top: 0.5rem;
+}
+
+.rich-text .katex {
+  font-size: 1.05em;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .animate-spin {
+    animation: none !important;
+  }
+}
+
+/* 문서(문제지·정답해설지) 공통 */
+.doc-page {
+  font-family: Pretendard, 'Noto Sans KR', 'Noto Serif KR', serif, sans-serif;
+}
+
+/* 문서 미리보기 — 좁은 창에서는 A4 를 축소해 보여 준다 */
+.doc-fit {
+  transform-origin: top left;
+}
+
+/* 인쇄 화면: A4 */
+@page {
+  size: A4;
+  margin: 16mm 14mm;
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-page {
+    break-after: page;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    min-height: 0 !important;
+  }
+  .print-page:last-child {
+    break-after: auto;
+  }
+  .avoid-break {
+    break-inside: avoid;
+  }
+  .doc-fit {
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+  }
+}

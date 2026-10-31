@@ -1,0 +1,46 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.hobeoung'
+version = '0.1.0'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+// anthropic-java 는 Jackson 2.19 를 요구한다 — Spring Boot 3.4 기본(2.18)이 낮춰 버리지 않게 올린다
+ext['jackson-bom.version'] = '2.19.4'
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.flywaydb:flyway-database-postgresql'
+	implementation 'org.springframework.security:spring-security-crypto'
+	// Claude 호출 — 구조화·대화 도구 루프·스트리밍
+	implementation 'com.anthropic:anthropic-java:2.73.0'
+	// 자료 텍스트 추출
+	implementation 'org.apache.pdfbox:pdfbox:3.0.3'
+	implementation 'org.apache.poi:poi-ooxml:5.2.5'
+	runtimeOnly 'org.postgresql:postgresql'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+	options.compilerArgs << '-parameters'
+}

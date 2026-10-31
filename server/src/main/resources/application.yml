@@ -1,0 +1,57 @@
+server:
+  port: ${PORT:18600}
+  servlet:
+    context-path: /api
+  # SSE 응답이 길어도 끊지 않는다 (SseEmitter 타임아웃은 코드에서 지정)
+  tomcat:
+    connection-timeout: 120s
+
+spring:
+  application:
+    name: edufactory
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:6432/edufactory?currentSchema=edufactory,public}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:edufactory}
+  flyway:
+    schemas: edufactory
+    default-schema: edufactory
+    create-schemas: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+  mvc:
+    async:
+      request-timeout: 1800000
+
+edufactory:
+  admin:
+    email: ${EDUFACTORY_ADMIN_EMAIL:admin@edufactory.local}
+    password: ${EDUFACTORY_ADMIN_PASSWORD:admin1234}
+  storage:
+    dir: ${EDUFACTORY_STORAGE_DIR:./data/uploads}
+  cors:
+    origins: ${EDUFACTORY_CORS_ORIGINS:http://localhost:3010,http://127.0.0.1:3010}
+  ai:
+    api-key: ${ANTHROPIC_API_KEY:}
+    base-url: ${ANTHROPIC_BASE_URL:}
+    model: ${EDUFACTORY_MODEL:claude-opus-5-5}
+    structure-model: ${EDUFACTORY_STRUCTURE_MODEL:claude-opus-5-5}
+    effort: ${EDUFACTORY_EFFORT:medium}
+    max-tokens: 64000
+    max-tool-calls: 24
+    monthly-budget-usd: ${EDUFACTORY_MONTHLY_BUDGET_USD:100}
+    fallback-enabled: true
+    web-search-enabled: ${EDUFACTORY_WEB_SEARCH:true}
+    web-search-max-uses: 8
+  embedding:
+    # 키가 없으면 로컬 해시 임베딩(개발용, 의미 검색 품질 낮음)으로 동작한다
+    voyage-api-key: ${VOYAGE_API_KEY:}
+    voyage-base-url: https://api.voyageai.com
+    model: ${VOYAGE_MODEL:voyage-3.5}
+    dimension: 1024
+
+logging:
+  level:
+    com.hobeoung.edufactory: INFO
