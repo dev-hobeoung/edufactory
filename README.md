@@ -59,3 +59,4 @@ npm run dev                                                   # http://localhost
 | `VOYAGE_MODEL` | `voyage-3.5` (1024차원 고정 — 바꾸면 `ef_chunk.embedding` 재생성) |
 | `EDUFACTORY_STORAGE_DIR` | `./data/uploads` (원본 파일) |
 | `EDUFACTORY_CORS_ORIGINS` | `http://localhost:3010,http://127.0.0.1:3010` |
+# edufactory
