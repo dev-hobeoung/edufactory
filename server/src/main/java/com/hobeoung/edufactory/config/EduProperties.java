@@ -13,7 +13,7 @@ public record EduProperties(Admin admin, Storage storage, Cors cors, Ai ai, Embe
     admin = admin == null ? new Admin(null, null) : admin;
     storage = storage == null ? new Storage(null) : storage;
     cors = cors == null ? new Cors(null) : cors;
-    ai = ai == null ? new Ai(null, null, null, null, null, 0, 0, 0, true, true, 0) : ai;
+    ai = ai == null ? new Ai(null, null, null, null, 0, 0, 0, true, true, 0) : ai;
     embedding = embedding == null ? new Embedding(null, null, null, 0) : embedding;
   }
 
@@ -37,10 +37,9 @@ public record EduProperties(Admin admin, Storage storage, Cors cors, Ai ai, Embe
   }
 
   /**
-   * @param baseUrl 로컬 검증용 가짜 서버 주소 (비우면 Anthropic 공식 엔드포인트)
    * @param webSearchEnabled 웹 검색 서버 도구(창의성 단계의 외부 자료) 사용 여부
    */
-  public record Ai(String apiKey, String baseUrl, String model, String structureModel, String effort, long maxTokens,
+  public record Ai(String apiKey, String model, String structureModel, String effort, long maxTokens,
       int maxToolCalls, double monthlyBudgetUsd, boolean fallbackEnabled, boolean webSearchEnabled,
       int webSearchMaxUses) {
     public Ai {

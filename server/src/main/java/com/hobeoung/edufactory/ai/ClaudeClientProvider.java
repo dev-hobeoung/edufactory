@@ -17,14 +17,11 @@ public class ClaudeClientProvider {
   public ClaudeClientProvider(EduProperties props) {
     String apiKey = props.ai().apiKey();
     if (apiKey != null && !apiKey.isBlank()) {
-      AnthropicOkHttpClient.Builder builder = AnthropicOkHttpClient.builder()
+      this.client = AnthropicOkHttpClient.builder()
           .apiKey(apiKey)
           .timeout(Duration.ofMinutes(10))
-          .maxRetries(2);
-      if (props.ai().baseUrl() != null && !props.ai().baseUrl().isBlank()) {
-        builder.baseUrl(props.ai().baseUrl());
-      }
-      this.client = builder.build();
+          .maxRetries(2)
+          .build();
     } else {
       this.client = null;
     }

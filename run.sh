@@ -49,7 +49,6 @@ DATABASE_URL|jdbc:postgresql://localhost:6432/edufactory?currentSchema=edufactor
 DATABASE_USERNAME|postgres|DB 사용자|
 DATABASE_PASSWORD|edufactory|DB 비밀번호|s
 ANTHROPIC_API_KEY||Claude API 키 (없으면 규칙 기반 구조화, 대화 불가)|s
-ANTHROPIC_BASE_URL||Claude API 주소 (빈 값 = 기본)|
 EDUFACTORY_MODEL|claude-opus-5-5|대화 모델||claude-opus-5-5 claude-sonnet-5-5 claude-haiku-4-5-20251001 claude-fable-5-1
 EDUFACTORY_STRUCTURE_MODEL|claude-opus-5-5|구조화 모델||claude-opus-5-5 claude-sonnet-5-5 claude-haiku-4-5-20251001 claude-fable-5-1
 EDUFACTORY_EFFORT|medium|effort||low medium high xhigh max

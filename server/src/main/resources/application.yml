@@ -35,7 +35,6 @@ edufactory:
     origins: ${EDUFACTORY_CORS_ORIGINS:http://localhost:3010,http://127.0.0.1:3010}
   ai:
     api-key: ${ANTHROPIC_API_KEY:}
-    base-url: ${ANTHROPIC_BASE_URL:}
     model: ${EDUFACTORY_MODEL:claude-opus-5-5}
     structure-model: ${EDUFACTORY_STRUCTURE_MODEL:claude-opus-5-5}
     effort: ${EDUFACTORY_EFFORT:medium}
