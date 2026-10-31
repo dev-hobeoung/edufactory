@@ -29,6 +29,9 @@
 
 ## 실행
 
+`./run.sh` 하나로 기동·종료·속성을 관리할 수 있다 (대화형 메뉴, 또는 `./run.sh start|stop|restart|status|logs|config|set|get`).
+속성은 `.edufactory.env`(gitignore)에 저장되고 기동할 때 아래 환경변수로 넘어간다. 직접 띄우려면:
+
 ```bash
 # DB: docker 컨테이너 edufactory (pgvector/pgvector:pg17) — localhost:6432, DB edufactory, postgres/edufactory
 #     테이블은 edufactory 스키마에 Flyway 가 만든다 (vector 확장은 public)

@@ -15,3 +15,7 @@ web/.env.local
 .DS_Store
 .idea/
 .vscode/
+
+# 실행 스크립트(./run.sh) 속성·로그
+.edufactory.env
+.run/
