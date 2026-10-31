@@ -29,7 +29,7 @@
 
 ## 실행
 
-`./run.sh` 하나로 기동·종료·속성을 관리할 수 있다 (대화형 메뉴, 또는 `./run.sh start|stop|restart|status|logs|config|set|get`).
+`./run.sh` 하나로 기동·종료·속성을 관리할 수 있다 (키보드 메뉴 — ↑↓ 이동 · Space 선택/값 바꾸기 · Enter 실행 · Esc/q 뒤로, 또는 `./run.sh start|stop|restart|status|logs|config|set|get`).
 속성은 `.edufactory.env`(gitignore)에 저장되고 기동할 때 아래 환경변수로 넘어간다. 직접 띄우려면:
 
 ```bash
